@@ -28,4 +28,14 @@ public class ExcelServiceImpl implements ExcelService {
     public List<VIPRecharge> selVIPRechargeList() {
         return excelDao.selVIPRechargeList();
     }
+
+    @Override
+    public int insVIPRechargeByEntity(List<VIPRecharge> vipRechargesList) {
+        return excelDao.insertVIPRecharge(vipRechargesList);
+    }
+
+    @Override
+    public List<VIPRecharge> listTOVIPRecharge(List<ArrayList<Object>> vipRechargeList) {
+        return ExcelConversion.getExcelResource(vipRechargeList);
+    }
 }

@@ -13,9 +13,12 @@
     <input id="submitInfo" type="button" value="提交">
 </form>
 <a href="/insertExcel">保存</a>
-<a href="/sql">sql判断</a>
+<a id="dianji" href="#">sql判断</a>
 <script  src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
+
+    var listVIP = "";
+
     $("#submitInfo").on("click",function () {
         if($("#excel_file").val()!=null && $("#excel_file").val()!="") {
             $.ajax({
@@ -26,20 +29,55 @@
                         contentType: false,
                         dataType: "json",
                         success: function (data) {
+                            listVIP=data;
                             var tableInfo=$("#showInfo");
                             $("#batchAdd").hide();
                             var str="";
-                            for (var i = 2; i < data.length ; i++) {
+                            str+="<tr>";
+                            str+="<td>卡号</td>";
+                            str+="<td>充值时间</td>";
+                            str+="<td>充值类型</td>";
+                            str+="<td>充值方式</td>";
+                            str+="<td>充值金额</td>";
+                            str+="<td>充值后余额</td>";
+                            str+="</tr>";
+                            for (var i = 0; i < data.length ; i++) {
                                 str+="<tr>";
-                                for (var j = 0; j < data[i].length ; j++) {
-                                    str+="<td>"+data[i][j]+"</td>";
-                                }
-                                str+="</td>";
+                                str+="<td>"+data[i].cardNumber+"</td>";
+                                str+="<td>"+data[i].rechargeTime+"</td>";
+                                str+="<td>"+data[i].rechargeType+"</td>";
+                                str+="<td>"+data[i].rechargeTheWay+"</td>";
+                                str+="<td>"+data[i].rechargeMoney+"</td>";
+                                str+="<td>"+data[i].rechargeBalabce+"</td>";
+                                str+="</tr>";
                             }
                             tableInfo.append(str);
                             tableInfo.show();
                 }
 
+            });
+        }
+    });
+
+    $("#dianji").on("click",function () {
+        if(listVIP != null) {
+            $.ajax({
+                url: "/insertExcel",
+                type: "post",
+                data: JSON.stringify(listVIP),
+                contentType: "application/json",
+                dataType: "json",
+                success:function (data) {
+                    if (data > 0){
+                        alert("数据保存成功！");
+                    }else{
+                        alert("数据保存失败！")
+                    }
+
+                },
+                error:function (data) {
+                    alert("错了");
+                }
             });
         }
     });

@@ -1,10 +1,12 @@
 package com.nie.excel.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.nie.excel.entity.VIPRecharge;
 import com.nie.excel.service.impl.ExcelServiceImpl;
 import com.nie.excel.util.ExcelConversion;
 import com.nie.excel.util.ExcelRead;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -30,27 +32,35 @@ public class ReadExcelController {
 
     @RequestMapping("/readExcel")
     @ResponseBody
-    public List<ArrayList<Object>> readExcel(@RequestParam(value = "excelFile") MultipartFile file, HttpServletRequest request, HttpSession session) throws IOException {
+    public List<VIPRecharge> readExcel(@RequestParam(value = "excelFile") MultipartFile file, HttpServletRequest request, HttpSession session) throws IOException {
         List<ArrayList<Object>> list = new ExcelRead().readExcel(file);
         //可以在这里转换成对象集合在返回
+
 
         if (list == null) {
             return null;
         }
 
-        //不放到session里 换另外的方式
 
-        session.setAttribute("excelList",list);
-        return list;
+        //不放到session里 换另外的方式
+        //session.setAttribute("excelList",list);
+        List<VIPRecharge> vipRechargeList = excelService.listTOVIPRecharge(list);
+        System.out.println("判断返回的数据："+vipRechargeList.size());
+
+        return vipRechargeList;
     }
 
     @ResponseBody
     @RequestMapping("/insertExcel")
-    public String insertExcel( HttpSession session){
-        List<ArrayList<Object>> excelList = (List<ArrayList<Object>>) session.getAttribute("excelList");
-        int isok = excelService.insertVIPRecharge(excelList);
-        if (isok == 0) return "error";
-        else return "success";
+    public int insertExcel(@RequestBody String data, HttpSession session){
+        System.out.println("data数据:"+data);
+
+        //此处有bug 需要前台或者这里判断 data
+        List<VIPRecharge> vipRechargeList = new ArrayList<>();
+        vipRechargeList = JSONObject.parseArray(data, VIPRecharge.class);
+
+        return excelService.insVIPRechargeByEntity(vipRechargeList);
+
     }
 
     @RequestMapping("/read")

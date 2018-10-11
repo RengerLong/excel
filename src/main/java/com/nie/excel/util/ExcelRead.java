@@ -31,7 +31,7 @@ public class ExcelRead {
         public static int totalCells; //每一行总单元格数
         /**
          * read the Excel .xlsx,.xls
-         * @param file jsp中的上传文件
+         * @param file 上传文件
          * @return
          * @throws IOException
          * 判断文件是否无误
