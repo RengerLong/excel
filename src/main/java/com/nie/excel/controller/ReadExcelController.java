@@ -37,6 +37,9 @@ public class ReadExcelController {
         if (list == null) {
             return null;
         }
+
+        //不放到session里 换另外的方式
+
         session.setAttribute("excelList",list);
         return list;
     }
