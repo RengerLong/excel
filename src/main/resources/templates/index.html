@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<table border="1px solid gray" id="showInfo" style="display: none;">
+
+</table>
+<form  enctype="multipart/form-data" method="post" id="batchAdd" name="batchAdd" target="result">
+    <input id="excel_file" type="file" name="excelFile" size="50"/>
+    <input id="submitInfo" type="button" value="提交">
+</form>
+<a href="/insertExcel">保存</a>
+<a href="/sql">sql判断</a>
+<script  src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script type="text/javascript">
+    $("#submitInfo").on("click",function () {
+        if($("#excel_file").val()!=null && $("#excel_file").val()!="") {
+            $.ajax({
+                        url: "/readExcel",
+                        type: "post",
+                        data: new FormData($("#batchAdd")[0]),
+                        processData: false,
+                        contentType: false,
+                        dataType: "json",
+                        success: function (data) {
+                            var tableInfo=$("#showInfo");
+                            $("#batchAdd").hide();
+                            var str="";
+                            for (var i = 2; i < data.length ; i++) {
+                                str+="<tr>";
+                                for (var j = 0; j < data[i].length ; j++) {
+                                    str+="<td>"+data[i][j]+"</td>";
+                                }
+                                str+="</td>";
+                            }
+                            tableInfo.append(str);
+                            tableInfo.show();
+                }
+
+            });
+        }
+    });
+
+
+</script>
+</body>
