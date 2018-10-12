@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+<style type="text/css">
+    *{
+        text-align: center;
+    }
+    table{
+        margin: auto;
+    }
+</style>
 <body>
 <table border="1px solid gray" id="showInfo" style="display: none;">
 
@@ -12,12 +20,12 @@
     <input id="excel_file" type="file" name="excelFile" size="50"/>
     <input id="submitInfo" type="button" value="提交">
 </form>
-<a href="/insertExcel">保存</a>
-<a id="dianji" href="#">sql判断</a>
+<a id="dianji" href="javascript:void(0)">保存</a>
+<a id="panduan" href="javascript:void(0)">sql判断</a>
 <script  src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script type="text/javascript">
 
-    var listVIP = "";
+    var listVIP = null;
 
     $("#submitInfo").on("click",function () {
         if($("#excel_file").val()!=null && $("#excel_file").val()!="") {
@@ -44,11 +52,19 @@
                             for (var i = 0; i < data.length ; i++) {
                                 str+="<tr>";
                                 str+="<td>"+data[i].cardNumber+"</td>";
-                                str+="<td>"+data[i].rechargeTime+"</td>";
-                                str+="<td>"+data[i].rechargeType+"</td>";
+
+                                if (data[i].rechargeTime == null) str+="<td>---</td>";
+                                else str += "<td>" + data[i].rechargeTime + "</td>";
+
+                                if(data[i].rechargeType == null) str+="<td>---</td>";
+                                else str+="<td>"+data[i].rechargeType+"</td>";
+
                                 str+="<td>"+data[i].rechargeTheWay+"</td>";
                                 str+="<td>"+data[i].rechargeMoney+"</td>";
-                                str+="<td>"+data[i].rechargeBalabce+"</td>";
+
+                                if(data[i].rechargeBalabce == null) str+="<td>---</td>";
+                                else str+="<td>"+data[i].rechargeBalabce+"</td>";
+
                                 str+="</tr>";
                             }
                             tableInfo.append(str);
@@ -58,7 +74,9 @@
             });
         }
     });
-
+    $("#panduan").on("click",function () {
+        alert(JSON.stringify(listVIP));
+    });
     $("#dianji").on("click",function () {
         if(listVIP != null) {
             $.ajax({
@@ -73,12 +91,13 @@
                     }else{
                         alert("数据保存失败！")
                     }
-
                 },
                 error:function (data) {
-                    alert("错了");
+                    alert("错误的方法！");
                 }
             });
+        }else{
+            alert("数据为空！！")
         }
     });
 

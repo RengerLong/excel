@@ -34,17 +34,13 @@ public class ReadExcelController {
     @ResponseBody
     public List<VIPRecharge> readExcel(@RequestParam(value = "excelFile") MultipartFile file, HttpServletRequest request, HttpSession session) throws IOException {
         List<ArrayList<Object>> list = new ExcelRead().readExcel(file);
-        //可以在这里转换成对象集合在返回
-
-
         if (list == null) {
             return null;
         }
-
-
         //不放到session里 换另外的方式
         //session.setAttribute("excelList",list);
         List<VIPRecharge> vipRechargeList = excelService.listTOVIPRecharge(list);
+
         System.out.println("判断返回的数据："+vipRechargeList.size());
 
         return vipRechargeList;
@@ -57,8 +53,9 @@ public class ReadExcelController {
 
         //此处有bug 需要前台或者这里判断 data
         List<VIPRecharge> vipRechargeList = new ArrayList<>();
-        vipRechargeList = JSONObject.parseArray(data, VIPRecharge.class);
 
+//TODO 添加验证
+        vipRechargeList = JSONObject.parseArray(data, VIPRecharge.class);
         return excelService.insVIPRechargeByEntity(vipRechargeList);
 
     }
